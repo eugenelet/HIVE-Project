@@ -18,7 +18,7 @@
                 Ting-Yu Chang<sup>2</sup>, 
                 Jui-Huang Tsai<sup>2</sup>, 
                 <a href="https://med.uc.edu/landing-pages/profile/Index/Pubs/diaoje">Jiajie Diao</a><sup>1</sup>, 
-                Chen-Yi Lee<sup>2</sup>
+                <a href="https://iee.nycu.edu.tw/en/teacher/p1.php?num=96&page=1">Chen-Yi Lee</a><sup>2</sup>
             </p>
             <p class="affiliations">
                 <sup>1</sup> University of Cincinnati<br>
@@ -44,7 +44,7 @@
         <section class="overview">
             <h2>System Overview</h2>
             <figure>
-                <img src="figures/HIVE-overview.png" alt="Overview of the HIVE framework." style="width:100%; max-width: 800px;">
+                <img src="images/HIVE-overview.png" alt="Overview of the HIVE framework." style="width:100%; max-width: 800px;">
                 <figcaption>
                     <strong>HIVE Framework.</strong> The vision encoder extracts hierarchical visual features, which are projected and integrated into the large language model (LLM) through cross-attention. This enables multi-layered feature alignment, improving representation learning, semantic understanding, and gradient flow.
                 </figcaption>
@@ -120,11 +120,11 @@
             
             <div class="image-grid-1x2">
                 <figure>
-                    <img src="figures/gradient.png" alt="Gradient map visualization across encoder layers">
+                    <img src="images/gradient.png" alt="Gradient map visualization across encoder layers">
                     <figcaption><strong>Gradient Flow:</strong> Gradients in earlier layers exhibit more granular, localized patterns compared to baselines. The cross-attention objective successfully forces gradients to flow back into early visual layers, bypassing late-fusion bottlenecks.</figcaption>
                 </figure>
                 <figure>
-                    <img src="figures/attention.png" alt="Attention map visualization for sampled tokens">
+                    <img src="images/attention.png" alt="Attention map visualization for sampled tokens">
                     <figcaption><strong>Attention Maps:</strong> Lower layers focus on specific, fine-grained regions (textures, edges), while higher layers exhibit dispersed attention patterns reflecting broader, abstract semantics corresponding to specific text tokens.</figcaption>
                 </figure>
             </div>
