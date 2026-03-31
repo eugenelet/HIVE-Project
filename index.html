@@ -59,6 +59,16 @@
             </p>
         </section>
 
+        <section class="comparison">
+            <h2>Hierarchical vs. Cascaded Pre-Training</h2>
+            <figure>
+                <img src="images/research-VLM-compare.png" alt="Comparison of hierarchical and cascaded pre-training" style="width:100%; max-width: 800px;">
+                <figcaption>
+                    <strong>Gradient Propagation Difference.</strong> <em>Left:</em> HIVE establishes direct cross-attention across multiple layers, allowing for stronger gradient propagation. <em>Right:</em> Standard cascaded pre-training restricts interactions to the final layer, leading to attenuated gradient signals in early vision layers.
+                </figcaption>
+            </figure>
+        </section>
+
         <section class="results">
             <h2>Main Quantitative Results</h2>
             <p>
@@ -111,8 +121,26 @@
                 <div class="finding-card">
                     <h3>Massive Efficiency Gains</h3>
                     <p>
-                        By bypassing the LLM’s MLP layers for visual tokens and limiting cross-modal interactions to a smaller subset of features, HIVE achieves a <strong>3&times; speedup</strong> in per-epoch wall-clock training time and reduces peak GPU memory consumption by <strong>55%</strong> compared to full self-attention baselines.
+                        By limiting cross-modal interactions to a smaller subset of features (25% of layers), HIVE avoids the quadratic explosion of full self-attention.
                     </p>
+                    <table style="margin-top: 15px; width: 100%;">
+                        <tr>
+                            <th style="text-align: left; background: transparent; color: var(--primary-color); border: none; padding: 5px 0;">Metric</th>
+                            <th style="text-align: right; background: transparent; color: var(--primary-color); border: none; padding: 5px 0;">HIVE vs Baseline</th>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px 0; border: none;">Training Cost (TFLOPs)</td>
+                            <td style="text-align: right; padding: 5px 0; border: none; font-weight: bold; color: green;">0.14&times;</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px 0; border: none;">Peak GPU Memory</td>
+                            <td style="text-align: right; padding: 5px 0; border: none; font-weight: bold; color: green;">-59.3%</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px 0; border: none;">Wall-Clock Time</td>
+                            <td style="text-align: right; padding: 5px 0; border: none; font-weight: bold; color: green;">3.4&times; Faster</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </section>
@@ -120,19 +148,26 @@
         <section class="analysis">
             <h2>Qualitative Analysis: Gradients & Attention</h2>
             <p>
-                To understand how hierarchical cross-attention influences optimization, we analyzed the gradient flow and attention maps across the vision encoder layers.
+                HIVE's structured gradient propagation contributes to enhanced stability during training and improved visual representation learning across complex scenes.
             </p>
             
-            <div class="image-grid-1x2">
+            <h3>Gradient Flow Analysis</h3>
+            <div class="image-grid-2x2">
                 <figure>
-                    <img src="images/gradient.png" alt="Gradient map visualization across encoder layers">
-                    <figcaption><strong>Gradient Flow:</strong> Gradients in earlier layers exhibit more granular, localized patterns compared to baselines. The cross-attention objective successfully forces gradients to flow back into early visual layers, bypassing late-fusion bottlenecks.</figcaption>
+                    <img src="images/gradient_1.png" alt="Gradient map visualization for cafe scene">
+                    <figcaption>Early layers highlight fine details like chair edges; deeper layers emphasize broader scene structure.</figcaption>
                 </figure>
                 <figure>
-                    <img src="images/attention.png" alt="Attention map visualization for sampled tokens">
-                    <figcaption><strong>Attention Maps:</strong> Lower layers focus on specific, fine-grained regions (textures, edges), while higher layers exhibit dispersed attention patterns reflecting broader, abstract semantics corresponding to specific text tokens.</figcaption>
+                    <img src="images/gradient_3.png" alt="Gradient map visualization for sports scene">
+                    <figcaption>HIVE captures dynamic motion cues, focusing sharply on the athlete and defenders.</figcaption>
                 </figure>
             </div>
+
+            <h3 style="margin-top: 40px;">Attention Maps</h3>
+            <figure>
+                <img src="images/attention_3.png" alt="Attention map visualization for dynamic movement" style="width:100%;">
+                <figcaption><strong>Dynamic Token Alignment:</strong> HIVE effectively emphasizes the athlete’s movement and surrounding players corresponding to specific textual tokens, illustrating improved semantic localization.</figcaption>
+            </figure>
         </section>
 
         <section class="citation">
