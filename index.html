@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hierarchical Pre-Training of Vision Encoders with Large Language Models</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <h1>Hierarchical Pre-Training of Vision Encoders with Large Language Models</h1>
+            <p class="authors">
+                <a href="https://eugenelet.github.io">Eugene Lee</a><sup>1</sup>, 
+                Ting-Yu Chang<sup>2</sup>, 
+                Jui-Huang Tsai<sup>2</sup>, 
+                <a href="https://med.uc.edu/landing-pages/profile/Index/Pubs/diaoje">Jiajie Diao</a><sup>1</sup>, 
+                Chen-Yi Lee<sup>2</sup>
+            </p>
+            <p class="affiliations">
+                <sup>1</sup> University of Cincinnati<br>
+                <sup>2</sup> National Yang Ming Chiao Tung University
+            </p>
+            <p class="venue"><strong>CVPR 2026</strong></p>
+            <div class="links">
+                <a href="#" class="btn">📄 Paper</a>
+                <a href="#" class="btn">💻 Code & Models</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section class="abstract">
+            <h2>Abstract</h2>
+            <p>
+                The field of computer vision has experienced significant advancements through scalable vision encoders and multimodal pre-training frameworks. However, existing approaches often treat vision encoders and large language models (LLMs) as independent modules, limiting the integration of hierarchical visual features. In this work, we propose <strong>HIVE (Hierarchical Pre-Training of Vision Encoders)</strong>, a novel framework that enhances vision-language alignment by introducing hierarchical cross-attention between the vision encoder and LLM. Unlike conventional methods that flatten image embeddings, HIVE enables structured feature fusion across multiple layers, improving gradient flow and representation learning. To optimize this interaction, we introduce a three-stage training strategy that progressively aligns the vision encoder with the LLM, ensuring stable optimization and effective multimodal fusion. Empirical evaluations demonstrate that HIVE achieves superior performance not only in image classification but also on various vision-language tasks, outperforming self-attention-based methods in benchmarks such as MME, GQA, OK-VQA, and ScienceQA. Our results highlight the benefits of hierarchical feature integration, paving the way for more efficient and expressive vision-language models.
+            </p>
+        </section>
+
+        <section class="overview">
+            <h2>System Overview</h2>
+            <figure>
+                <img src="figures/HIVE-overview.png" alt="Overview of the HIVE framework." style="width:100%; max-width: 800px;">
+                <figcaption>
+                    <strong>HIVE Framework.</strong> The vision encoder extracts hierarchical visual features, which are projected and integrated into the large language model (LLM) through cross-attention. This enables multi-layered feature alignment, improving representation learning, semantic understanding, and gradient flow.
+                </figcaption>
+            </figure>
+            <p>
+                Instead of feeding flattened image embeddings directly into the input layer of large language models, HIVE establishes a multi-layered cross-attention interface. We define a selection subset of the vision encoder depths and map them via a lightweight projector. The LLM then attends to these intermediate vision features directly. By physically routing intermediate vision features to intermediate LLM layers, we force the vision encoder to preserve low-level structural data in its early layers, and abstract semantics in its deeper layers, directly supervised by the LLM's language modeling loss.
+            </p>
+        </section>
+
+        <section class="results">
+            <h2>Main Quantitative Results</h2>
+            <p>
+                We evaluate HIVE against self-attention (SA) baselines on standard vision-language benchmarks using SigLIP. Following a rigorous three-stage pre-training method, HIVE consistently outperforms both the base models and the SA baselines, demonstrating that hierarchical feature integration significantly improves multimodal reasoning capabilities.
+            </p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Encoder</th>
+                            <th>MME</th>
+                            <th>GQA</th>
+                            <th>OK-VQA</th>
+                            <th>ScienceQA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Base (SigLIP)</td>
+                            <td>1296</td>
+                            <td>57.74</td>
+                            <td>48.78</td>
+                            <td>62.34</td>
+                        </tr>
+                        <tr>
+                            <td>SA (Self-Attention)</td>
+                            <td>1263</td>
+                            <td>57.69</td>
+                            <td>46.19</td>
+                            <td>59.56</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td class="bold">HIVE (Ours)</td>
+                            <td class="bold">1298</td>
+                            <td class="bold">58.05</td>
+                            <td class="bold">51.01</td>
+                            <td class="bold">63.12</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="findings-grid">
+                <div class="finding-card">
+                    <h3>Superior Fine-Grained Classification</h3>
+                    <p>
+                        On pure vision tasks, HIVE showcases exceptional improvements on fine-grained benchmarks like <strong>Food-101 (96.56%)</strong> and <strong>Caltech-256 (97.33%)</strong>, proving that multi-layered integration helps the encoder capture highly intricate visual details better than flat embeddings.
+                    </p>
+                </div>
+                <div class="finding-card">
+                    <h3>Massive Efficiency Gains</h3>
+                    <p>
+                        By bypassing the LLM’s MLP layers for visual tokens and limiting cross-modal interactions to a smaller subset of features, HIVE achieves a <strong>3&times; speedup</strong> in per-epoch wall-clock training time and reduces peak GPU memory consumption by <strong>55%</strong> compared to full self-attention baselines.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="analysis">
+            <h2>Qualitative Analysis: Gradients & Attention</h2>
+            <p>
+                To understand how hierarchical cross-attention influences optimization, we analyzed the gradient flow and attention maps across the vision encoder layers.
+            </p>
+            
+            <div class="image-grid-1x2">
+                <figure>
+                    <img src="figures/gradient.png" alt="Gradient map visualization across encoder layers">
+                    <figcaption><strong>Gradient Flow:</strong> Gradients in earlier layers exhibit more granular, localized patterns compared to baselines. The cross-attention objective successfully forces gradients to flow back into early visual layers, bypassing late-fusion bottlenecks.</figcaption>
+                </figure>
+                <figure>
+                    <img src="figures/attention.png" alt="Attention map visualization for sampled tokens">
+                    <figcaption><strong>Attention Maps:</strong> Lower layers focus on specific, fine-grained regions (textures, edges), while higher layers exhibit dispersed attention patterns reflecting broader, abstract semantics corresponding to specific text tokens.</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="citation">
+            <h2>Citation</h2>
+            <pre><code>@inproceedings{lee2026hierarchical,
+  title={Hierarchical Pre-Training of Vision Encoders with Large Language Models},
+  author={Lee, Eugene and Chang, Ting-Yu and Tsai, Jui-Huang and Diao, Jiajie and Lee, Chen-Yi},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2026}
+}</code></pre>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Eugene Lee, Ting-Yu Chang, Jui-Huang Tsai, Jiajie Diao, Chen-Yi Lee.</p>
+    </footer>
+
+</body>
+</html>
